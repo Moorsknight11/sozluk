@@ -1,10 +1,7 @@
 from flask import Flask, render_template, request, send_file
 import fitz  # PyMuPDF
-from PIL import Image
-import io
 import cv2
 import pytesseract
-from PIL import Image
 import random
 
 

@@ -1,0 +1,5 @@
+Flask
+pandas
+kaleido
+PyMuPDF
+opencv-python

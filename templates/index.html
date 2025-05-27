@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Turkish Voice Dictionary Search</title>
+</head>
+
+<body>
+    <h1>Speak a Turkish Word</h1>
+    <button id="start-btn">🎙️ Start Listening</button>
+    <p id="output"></p>
+
+    <div>
+
+        <h2>Search Turkish Word in Dictionary</h2>
+
+        <form method="POST">
+            <input id="word-input" type="text" name="word" placeholder="Enter Turkish word" required>
+            <button id="submit-search" type="submit">Search</button>
+        </form>
+
+        {% if error %}
+        <p style="color:red;">{{ error }}</p>
+        {% endif %}
+
+        {% if word %}
+        <h2>Match found for: <em>{{ word }}</em></h2>
+        <img src="{{ image_path }}" alt="PDF Page">
+        {% endif %}
+    </div>
+    <script>
+
+
+        document.getElementById("start-btn").addEventListener("click", () => {
+            const recognition = new webkitSpeechRecognition(); // or SpeechRecognition
+            recognition.lang = "tr-TR";
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.start();
+
+            recognition.onresult = function (event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById("output").textContent = `Heard: ${transcript}`;
+                document.getElementById("word-input").value = transcript;
+                document.getElementById("submit-search").click();
+                
+                fetch('/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ word: transcript })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.found) {
+                            document.getElementById("output").textContent += ` — Found on page(s): ${data.pages.join(', ')}`;
+                            // Optional: open the PDF to that page
+                        } else {
+                            document.getElementById("output").textContent += ` — Not found in PDF.`;
+                        }
+                    });
+            };
+
+            recognition.onerror = function (event) {
+                console.error("Speech recognition error", event.error);
+                alert("Error: " + event.error);
+            };
+        });
+    </script>
+</body>
+
+</html>

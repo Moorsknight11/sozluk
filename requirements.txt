@@ -4,3 +4,4 @@ pandas
 kaleido
 PyMuPDF
 opencv-python
+pytesseract

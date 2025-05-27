@@ -73,6 +73,9 @@ def render_pdf_page_as_image(pdf_path, page_number, target_word):
             cv2.putText(image, word, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
             found = True
 
+
+
+
     if found:
         print(f"'{target_word}' found and highlighted.")
     else:
